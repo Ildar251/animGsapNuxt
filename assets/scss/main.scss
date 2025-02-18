@@ -1,0 +1,145 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: none;
+    color: inherit;
+    appearance: none;
+    background: none;
+    line-height: inherit;
+    font-family: "Raleway", sans-serif;
+    box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 600;
+}
+
+h1 {
+    font-size: clamp-helper(38px, 64px)
+}
+
+h2 {
+    font-size: clamp-helper(26px, 36px)
+}
+
+h3 {
+    font-size: clamp-helper(24px, 32px)
+}
+
+h4 {
+    font-size: clamp-helper(22px, 28px)
+}
+
+h5 {
+    font-size: clamp-helper(20px, 24px)
+}
+
+h6 {
+    font-size: clamp-helper(18px, 20px)
+}
+
+
+
+button,
+input[type="button"],
+input[type="submit"] {
+    all: unset;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:focus,
+input[type="button"]:focus,
+input[type="submit"]:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+}
+
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+body {
+    background-color: $main-color;
+    color: #fff;
+}
+
+img {
+    max-width: 100%;
+}
+
+:root {
+    --swiper-pagination-color: #fff;
+    --swiper-pagination-bullet-size: 15px;
+    --swiper-button-color: #fff;
+    --swiper-button-size: 40px;
+    --swiper-pagination-bullet-inactive-color: #fff;
+    --swiper-pagination-bullet-inactive-opacity: 0.25;
+    --swiper-pagination-bullet-vertical-gap: 25px;
+    --swiper-pagination-left: calc(5% - 7px);
+}
+
+.container {
+    width: 80%;
+    max-width: 1345px;
+    margin: 0 auto;
+    position: relative;
+    height: 100%;
+
+    &-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+.section {
+    height: 100svh;
+    padding-top: 100px;
+    display: flex;
+    align-items: center;
+}
+
+.swiper-vertical {
+    height: 100svh;
+}
+
+.swiper-pagination {
+    width: fit-content;
+}
+
+.list {
+    list-style: none;
+
+    .list__item {
+        position: relative;
+        margin-bottom: 10px;
+        padding-left: 20px;
+        font-size: clamp-helper(16px, 18px);
+
+        span {
+            opacity: 0.75;
+        }
+
+
+        &::before {
+            @include pseudo-element(0, calc(50% - 5px), 10px, 10px, $accent-color);
+            border-radius: 50%;
+        }
+    }
+}
+
+.buttons {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
