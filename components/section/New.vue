@@ -1,10 +1,10 @@
 <script setup lang="ts"></script>
 
 <template>
-	<section class="section about" id="about">
+	<section class="section new">
 		<div class="container">
-			<div class="about__text">
-				<h2 class="h2 about__title">О нас</h2>
+			<div class="new__text">
+				<h2 class="h2 new__title">New</h2>
 			</div>
 		</div>
 	</section>

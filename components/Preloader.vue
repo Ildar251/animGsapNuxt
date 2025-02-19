@@ -1,44 +1,32 @@
 <script setup lang="ts">
-import { usePreloader } from '@/composables/usePreloader'
-import gsap from 'gsap'
-
-const preloader = ref<HTMLElement | null>(null)
+import { gsap } from 'gsap'
+const loading = ref(true)
 const progressBar = ref<HTMLElement | null>(null)
-const preloaderState = usePreloader()
-
 onMounted(() => {
-	const tl = gsap.timeline()
-
-	tl.to(progressBar.value, {
+	gsap.to(progressBar.value, {
 		width: '100%',
-		duration: 2,
-		ease: 'power2.inOut',
-	})
-
-	tl.to(preloader.value, {
-		opacity: 0,
-		duration: 0.5,
+		duration: 3,
 		ease: 'power2.out',
-		onComplete: () => {
-			if (preloader.value) {
-				preloader.value.style.display = 'none'
-			}
-			preloaderState.value = true // Устанавливаем состояние прелоадера в true
-		},
 	})
+	setTimeout(() => {
+		loading.value = false
+		window.dispatchEvent(new Event('preloadComplete')) // Сообщаем, что прелоадер завершился
+	}, 3000)
 })
 </script>
 <template>
-	<div class="preloader" ref="preloader">
-		<div class="preloader__content">
-			<div class="preloader__logo">
-				<img src="@/public/images/logo.png" alt="Logo" />
-			</div>
-			<div class="preloader__progress">
-				<div class="preloader__progress-bar" ref="progressBar"></div>
+	<Transition name="fade">
+		<div v-if="loading" class="preloader">
+			<div class="preloader__content">
+				<div class="preloader__logo">
+					<img src="@/public/images/logo.png" alt="Logo" />
+				</div>
+				<div class="preloader__progress">
+					<div class="preloader__progress-bar" ref="progressBar"></div>
+				</div>
 			</div>
 		</div>
-	</div>
+	</Transition>
 </template>
 
 <style scoped lang="scss">
@@ -48,7 +36,7 @@ onMounted(() => {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: #000;
+	background: $main-color;
 	display: flex;
 	justify-content: center;
 	align-items: center;

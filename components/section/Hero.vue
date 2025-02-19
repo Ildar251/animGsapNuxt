@@ -1,10 +1,83 @@
-<script setup>
+<script setup lang="ts">
 import gsap from 'gsap'
-import { onMounted } from 'vue'
-const preloaderState = usePreloader()
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import * as THREE from 'three'
+import { onMounted, onUnmounted, ref } from 'vue'
+
+gsap.registerPlugin(ScrollTrigger)
+
+const canvasRef = ref<HTMLCanvasElement | null>(null)
 
 onMounted(() => {
-	if (preloaderState.value) {
+	if (!import.meta.client) return
+	if (!canvasRef.value) return
+
+	const scene = new THREE.Scene()
+	const camera = new THREE.PerspectiveCamera(
+		75,
+		window.innerWidth / window.innerHeight,
+		0.1,
+		1000
+	)
+	const renderer = new THREE.WebGLRenderer({
+		canvas: canvasRef.value,
+		alpha: true,
+	})
+	renderer.setSize(window.innerWidth, window.innerHeight)
+	renderer.setPixelRatio(window.devicePixelRatio)
+
+	const geometry = new THREE.BoxGeometry(1, 1, 1)
+	const material = new THREE.MeshStandardMaterial({ color: 0xff0055 })
+	const cube = new THREE.Mesh(geometry, material)
+	scene.add(cube)
+
+	const light = new THREE.AmbientLight(0xffffff, 1)
+	scene.add(light)
+
+	camera.position.z = 3
+	cube.position.x = 2
+
+	const aboutSection = document.querySelector('#about') as HTMLElement
+	const aboutRect = aboutSection.getBoundingClientRect()
+	const aboutCenterX = aboutRect.left + aboutRect.width / 2
+	const aboutCenterY = aboutRect.top + aboutRect.height / 2
+
+	gsap.to(cube.position, {
+		x: aboutCenterX / window.innerWidth,
+		y: -(aboutCenterY / window.innerHeight),
+		scrollTrigger: {
+			trigger: '#about',
+			start: 'top bottom',
+			end: 'top center',
+			scrub: 1,
+		},
+	})
+
+	gsap.to(cube.scale, {
+		x: 2,
+		y: 2,
+		z: 2,
+		scrollTrigger: {
+			trigger: '#about',
+			start: 'top bottom',
+			end: 'top center',
+			scrub: 1,
+		},
+	})
+
+	const animate = () => {
+		requestAnimationFrame(animate)
+		cube.rotation.x += 0.01
+		cube.rotation.y += 0.01
+		renderer.render(scene, camera)
+	}
+	animate()
+
+	onUnmounted(() => {
+		renderer.dispose()
+	})
+
+	window.addEventListener('preloadComplete', () => {
 		gsap.fromTo(
 			'.animated-el-1',
 			{ x: '-10vw', y: '-20vh', opacity: 0, rotate: 0 },
@@ -101,7 +174,6 @@ onMounted(() => {
 				ease: 'power2.out',
 			}
 		)
-
 		gsap.fromTo(
 			'.home__text .btn',
 			{ opacity: 0, y: 30 },
@@ -114,7 +186,6 @@ onMounted(() => {
 				ease: 'power2.out',
 			}
 		)
-
 		gsap.fromTo(
 			'.home__image',
 			{ opacity: 0 },
@@ -125,7 +196,7 @@ onMounted(() => {
 				ease: 'power2.out',
 			}
 		)
-	}
+	})
 })
 </script>
 
@@ -170,8 +241,8 @@ onMounted(() => {
 					<UiButton className="secondary">О проекте</UiButton>
 				</div>
 			</div>
-			<div class="home__image">
-				<NuxtImg src="/hero.png" alt="hero" width="800" />
+			<div class="home__canvas">
+				<canvas ref="canvasRef"></canvas>
 			</div>
 		</div>
 	</section>
@@ -179,6 +250,24 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .home {
+	position: relative;
+	.home__canvas {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+	}
+	canvas {
+		width: 100% !important;
+		height: 100% !important;
+	}
+
+	.container {
+		position: static;
+	}
+
 	.background {
 		width: 100%;
 		height: 100%;

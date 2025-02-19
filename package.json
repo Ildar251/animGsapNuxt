@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@nuxt/image": "^1.8.1",
-    "gsap": "^3.12.5",
+    "@types/three": "^0.173.0",
+    "gsap": "^3.12.7",
     "nuxt": "^3.14.1592",
     "swiper": "^11.1.15",
+    "three": "^0.173.0",
     "vue": "latest",
     "vue-router": "latest"
   },
